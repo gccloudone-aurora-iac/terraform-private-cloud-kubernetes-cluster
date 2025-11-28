@@ -1,0 +1,40 @@
+rke2-cilium:
+  operator:
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+      - key: node-role.kubernetes.io/etcd
+        operator: Exists
+      - key: node-role.kubernetes.io/master
+        operator": Exists
+      - key: node.kubernetes.io/not-ready
+        operator: Exists
+      - key: node.cloudprovider.kubernetes.io/uninitialized
+        operator: Exists
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: "true"
+  hubble:
+    enabled: true
+    relay:
+      enabled: true
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      tolerations:
+      - key: node-role.kubernetes.io/etcd
+        operator: Exists
+      - key: node-role.kubernetes.io/control-plane
+        operator": Exists
+      - key: node-role.kubernetes.io/master
+        operator": Exists
+    ui:
+      enabled: true
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: "true"
+      tolerations:
+      - key: node-role.kubernetes.io/etcd
+        operator: Exists
+      - key: node-role.kubernetes.io/control-plane
+        operator": Exists
+      - key: node-role.kubernetes.io/master
+        operator": Exists
+#   routingMode: native

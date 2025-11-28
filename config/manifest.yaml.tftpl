@@ -1,0 +1,107 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: openstack-cloud-controller-manager
+  namespace: kube-system
+spec:
+  bootstrap: true
+  chart: openstack-cloud-controller-manager
+  repo: https://kubernetes.github.io/cloud-provider-openstack
+  targetNamespace: kube-system
+  valuesContent: |-
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: 'true'
+    tolerations:
+      - key: node.cloudprovider.kubernetes.io/uninitialized
+        value: "true"
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/etcd
+        effect: NoExecute
+    controllerExtraArgs: |-
+      - --cluster-cidr=${join(",", cluster_cidr)}
+    cloudConfig:
+      global:
+        auth-url: ${auth_url}
+        domain-id: ${domain_id}
+        tenant-id: ${project_id}
+        tenant-domain-id: ${domain_id}
+        application-credential-id: ${application_credential_id}
+        application-credential-secret: ${application_credential_secret}
+        user-domain-id: default
+        region: ${region}
+      loadBalancer:
+        enabled: true
+        network-id: ${network_id}
+        create-monitor: true
+        internal-lb: true
+        lb-provider: amphorav2
+      metadata:
+        search-order: metadataService
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: cinder-csi-plugin
+  namespace: kube-system
+spec:
+  bootstrap: true
+  chart: openstack-cinder-csi
+  repo: https://kubernetes.github.io/cloud-provider-openstack
+  targetNamespace: kube-system
+  valuesContent: |-
+    secret:
+      enabled: true
+      hostMount: false
+      create: false
+      name: cloud-config
+    storageClass:
+      enabled: false
+      custom: |-
+        ---
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: capacity-retain
+        parameters:
+          type: capacity
+        provisioner: cinder.csi.openstack.org
+        volumeBindingMode: Immediate
+        reclaimPolicy: Retain
+        allowVolumeExpansion: true
+        ---
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: capacity-delete
+        parameters:
+          type: capacity
+        provisioner: cinder.csi.openstack.org
+        volumeBindingMode: Immediate
+        reclaimPolicy: Delete
+        allowVolumeExpansion: true
+        ---
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: performance-retain
+        parameters:
+          type: performance
+        provisioner: cinder.csi.openstack.org
+        volumeBindingMode: Immediate
+        reclaimPolicy: Retain
+        allowVolumeExpansion: true
+        ---
+        apiVersion: storage.k8s.io/v1
+        kind: StorageClass
+        metadata:
+          name: performance-delete
+          annotations:
+            storageclass.kubernetes.io/is-default-class: "true"
+        parameters:
+          type: performance
+        provisioner: cinder.csi.openstack.org
+        volumeBindingMode: Immediate
+        reclaimPolicy: Delete
+        allowVolumeExpansion: true

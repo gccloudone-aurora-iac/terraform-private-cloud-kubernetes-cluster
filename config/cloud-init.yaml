@@ -1,0 +1,28 @@
+#cloud-config
+
+# Apt
+apt:
+  primary:
+    - arches:
+      - amd64
+      uri: https://repos.devops.private-prive.cloud-nuage.canada.ca/deb.debian.org/debian
+  security:
+    - arches:
+      - amd64
+      uri: https://repos.devops.private-prive.cloud-nuage.canada.ca/security.debian.org/debian-security
+
+# NTP
+ntp:
+  enabled: true
+  ntp_client: chrony
+  pools:
+    - tko-ott2.time.private-prive.cloud-nuage.canada.ca
+
+# Packages
+packages:
+  # Core system packages
+  - qemu-guest-agent
+
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
