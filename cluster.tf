@@ -43,6 +43,8 @@ resource "rancher2_cluster_v2" "this" {
   name               = var.name
   kubernetes_version = var.kubernetes_version
 
+  cloud_credential_secret_name = rancher2_cloud_credential.this.id
+
   enable_network_policy = true
 
   rke_config {

@@ -66,14 +66,14 @@ variable "network_plugin" {
 }
 
 variable "cluster_cidr" {
-  description = "CIDR of the cluster."
+  description = "CIDRs used for Kubernetes pods."
 
   type    = list(string)
   default = ["192.168.0.0/16"]
 }
 
 variable "service_cidr" {
-  description = "Cluster service CIDRs."
+  description = "CIDRs used for Kubernetes services."
 
   type    = list(string)
   default = ["172.16.0.0/20"]
