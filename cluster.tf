@@ -113,6 +113,7 @@ EOF
       application_credential_secret = var.application_credential_secret,
       cluster_cidr                  = var.cluster_cidr,
       network_id                    = var.network_id
+      force_internal_lbs            = var.force_internal_loadbalancers,
     })
   }
 

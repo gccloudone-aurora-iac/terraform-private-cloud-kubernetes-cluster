@@ -35,7 +35,7 @@ spec:
         enabled: true
         network-id: ${network_id}
         create-monitor: true
-        internal-lb: true
+        internal-lb: ${force_internal_lbs}
         lb-provider: amphorav2
       metadata:
         search-order: metadataService
