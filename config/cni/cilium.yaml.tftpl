@@ -1,4 +1,6 @@
 rke2-cilium:
+  cni:
+    exclusive: false
   operator:
     tolerations:
       - key: node-role.kubernetes.io/control-plane
