@@ -73,7 +73,10 @@ EOF
       yamldecode(templatefile("${path.module}/config/rancher.yaml.tftpl", {
         global_registry = var.global_registry
       })),
-    yamldecode(templatefile("${path.module}/config/cni/${var.network_plugin}.yaml.tftpl", {}))))
+    yamldecode(templatefile("${path.module}/config/cni/${var.network_plugin}.yaml.tftpl", {
+      // if more than 1  control nodes, create two replicas
+      operator_replicas = var.control_pool.count > 1 ? 2 : 1,
+    }))))
 
     dynamic "machine_pools" {
       for_each = local.pools

@@ -1,5 +1,8 @@
 rke2-cilium:
+  cni:
+    exclusive: false
   operator:
+    replicas: ${operator_replicas}
     tolerations:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
