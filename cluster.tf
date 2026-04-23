@@ -1,10 +1,7 @@
-locals {
-  pools = [
-    for pool in concat([var.control_pool], [var.worker_pool], var.additional_pools)
-    : pool
-  ]
-}
-
+# Provides a Rancher v2 Cloud Credential resource.
+#
+# https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cloud_credential
+#
 resource "rancher2_cloud_credential" "this" {
   name = var.name
   openstack_credential_config {
@@ -12,20 +9,24 @@ resource "rancher2_cloud_credential" "this" {
   }
 }
 
+# Provides a Rancher v2 Machine config v2 resource.
+#
+# https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/machine_config_v2
+#
 resource "rancher2_machine_config_v2" "this" {
   for_each = { for pool in local.pools : pool.name => pool }
 
   generate_name = each.key
 
   openstack_config {
-    auth_url                      = var.auth_url
-    application_credential_id     = var.application_credential_id
-    application_credential_secret = var.application_credential_secret
-    region                        = var.region
-    availability_zone             = coalesce(var.availability_zone, var.region)
-    domain_id                     = var.domain_id
-    tenant_domain_id              = var.domain_id
-    tenant_id                     = var.project_id
+    auth_url                      = var.openstack_auth_url
+    application_credential_id     = var.openstack_application_credential_id
+    application_credential_secret = var.openstack_application_credential_secret
+    region                        = var.openstack_region
+    availability_zone             = coalesce(var.openstack_availability_zone, var.openstack_region)
+    domain_id                     = var.openstack_domain_id
+    tenant_domain_id              = var.openstack_domain_id
+    tenant_id                     = var.openstack_project_id
     flavor_name                   = each.value.flavour
     image_name                    = coalesce(each.value.image_name, var.image_name)
     net_id                        = coalesce(each.value.network_id, var.network_id)
@@ -39,6 +40,10 @@ resource "rancher2_machine_config_v2" "this" {
   }
 }
 
+# Provides a Rancher v2 Cluster v2 resource.
+#
+# https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster_v2
+#
 resource "rancher2_cluster_v2" "this" {
   name               = var.name
   kubernetes_version = var.kubernetes_version
@@ -105,12 +110,12 @@ EOF
     }
 
     additional_manifest = templatefile("${path.module}/config/manifest.yaml.tftpl", {
-      auth_url                      = var.auth_url,
-      region                        = var.region,
-      domain_id                     = var.domain_id,
-      project_id                    = var.project_id,
-      application_credential_id     = var.application_credential_id,
-      application_credential_secret = var.application_credential_secret,
+      auth_url                      = var.openstack_auth_url,
+      region                        = var.openstack_region,
+      domain_id                     = var.openstack_domain_id,
+      project_id                    = var.openstack_project_id,
+      application_credential_id     = var.openstack_application_credential_id,
+      application_credential_secret = var.openstack_application_credential_secret,
       cluster_cidr                  = var.cluster_cidr,
       lb_network_id                 = var.loadbalancer_network_id
       force_internal_lbs            = var.force_internal_loadbalancers,

@@ -1,37 +1,51 @@
-variable "name" {
-  description = "Name of the cluster."
+###########################
+### OpenStack Resources ###
+###########################
+
+variable "openstack_application_credential_id" {
+  description = "Application Credential ID used by Rancher to provision on OpenStack."
 }
 
-variable "application_credential_id" {
-  description = "Application Credential ID for authentication with OpenStack."
-}
-
-variable "application_credential_secret" {
-  description = "Application Credential Secret for authentication with OpenStack."
+variable "openstack_application_credential_secret" {
+  description = "Application Credential Secret used by Rancher to provision on OpenStack."
 
   sensitive = true
 }
 
-variable "domain_id" {
+variable "openstack_domain_id" {
   description = "Domain ID of the OpenStack tenant where to deploy the cluster.."
 }
 
-variable "project_id" {
+variable "openstack_project_id" {
   description = "Project ID of the OpenStack project where to deploy the cluster."
 }
 
-variable "auth_url" {
+variable "openstack_auth_url" {
   description = "OpenStack Authentication URL"
 }
 
-variable "region" {
-  description = "OpenStack Region where to deploy the cluster."
+variable "openstack_region" {
+  description = "OpenStack region where to deploy the cluster."
 }
 
-variable "availability_zone" {
+variable "openstack_availability_zone" {
   description = "OpenStack Availability Zone where to deploy the cluster."
 
   default = null
+}
+
+variable "tags" {
+  description = "Tags to assign to the OpenStack resources"
+  type        = map(string)
+  default     = {}
+}
+
+###########################
+### Rancher Resources ###
+###########################
+
+variable "name" {
+  description = "Name of the cluster."
 }
 
 variable "network_id" {
@@ -99,6 +113,7 @@ variable "control_pool" {
     image_name      = optional(string)
     user_data       = optional(string)
     network_id      = optional(string)
+    subnet_id       = optional(string)
   })
 
   default = {}
@@ -124,6 +139,7 @@ variable "worker_pool" {
     image_name      = optional(string)
     user_data       = optional(string)
     network_id      = optional(string)
+    subnet_id       = optional(string)
   })
 
   default = {}
@@ -164,4 +180,3 @@ variable "force_internal_loadbalancers" {
   description = "If true, only internal load balancers may be used."
   default     = false
 }
-
