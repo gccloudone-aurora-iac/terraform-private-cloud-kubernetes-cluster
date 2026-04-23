@@ -155,13 +155,13 @@ variable "additional_pools" {
 }
 
 variable "loadbalancer_network_id" {
-  type = string
+  type        = string
   description = "The ID of the network that LoadBalancers will exist in."
 }
 
 variable "force_internal_loadbalancers" {
-  type = bool
+  type        = bool
   description = "If true, only internal load balancers may be used."
-  default = false
+  default     = false
 }
 
