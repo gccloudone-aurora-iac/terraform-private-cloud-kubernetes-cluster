@@ -165,6 +165,7 @@ variable "additional_pools" {
     image_name      = optional(string)
     user_data       = optional(string)
     network_id      = optional(string)
+    subnet_id       = optional(string)
   }))
 
   default = []
