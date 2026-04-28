@@ -29,7 +29,7 @@ resource "rancher2_machine_config_v2" "this" {
     tenant_id                     = var.openstack_project_id
     flavor_name                   = each.value.flavour
     image_name                    = coalesce(each.value.image_name, var.image_name)
-    net_id                        = coalesce(each.value.network_id, var.network_id)
+    net_id                        = each.value.network_id
     sec_groups                    = join(",", each.value.security_groups)
     ssh_user                      = "debian"
     user_data_file                = coalesce(each.value.user_data, file("${path.module}/config/cloud-init.yaml"))

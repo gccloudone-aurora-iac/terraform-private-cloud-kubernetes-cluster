@@ -48,10 +48,6 @@ variable "name" {
   description = "Name of the cluster."
 }
 
-variable "network_id" {
-  description = "Network ID of the OpenStack network where to deploy the cluster."
-}
-
 variable "image_name" {
   description = "Name of the image for the nodes."
 
